@@ -69,6 +69,11 @@
             background: #0056b3;
             transform: scale(1.1);
         }
+        .answer {
+            font-weight: bold;
+            margin-top: 5px;
+            color: #007bff;
+        }
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -118,39 +123,50 @@
             ret  ; Return to the caller</pre>
         <button class="button" onclick="animateCode()">Run Animation</button>
         
-        <div class="quiz">
+        
             <h2>Quick Quiz</h2>
+            <div class="quiz">
         <p>What is the purpose of the <code>ret</code> instruction in assembly?</p>
-        <button class="button" onclick="checkAnswer(0)">Return to caller</button>
-        <button class="button" onclick="checkAnswer(1)">Allocate memory</button>
-        
-        <p>Which register is used to store the return address?</p>
-        <button class="button" onclick="checkAnswer(2)">rsp</button>
-        <button class="button" onclick="checkAnswer(3)">rip</button>
-        
-        <p>Where are function parameters stored in x86-64?</p>
-        <button class="button" onclick="checkAnswer(4)">Registers</button>
-        <button class="button" onclick="checkAnswer(5)">Heap</button>
-        
+            <button class="button" onclick="checkAnswer(0, 'answer0')">Return to caller</button>
+            <button class="button" onclick="checkAnswer(1, 'answer0')">Allocate memory</button>
+            <p id="answer0" class="answer"></p>
+            
+            <p>Which register is used to store the return address?</p>
+            <button class="button" onclick="checkAnswer(2, 'answer1')">rsp</button>
+            <button class="button" onclick="checkAnswer(3, 'answer1')">rip</button>
+            <p id="answer1" class="answer"></p>
+            
+            <p>Where are function parameters stored in x86-64?</p>
+            <button class="button" onclick="checkAnswer(4, 'answer2')">Registers</button>
+            <button class="button" onclick="checkAnswer(5, 'answer2')">Heap</button>
+            <p id="answer2" class="answer"></p>
+
+
         <p>Which register is used to pass the first integer argument in x86-64?</p>
-        <button class="button" onclick="checkAnswer(6)">RAX</button>
-        <button class="button" onclick="checkAnswer(7)">RDI</button>
-        
+        <button class="button" onclick="checkAnswer(6, 'answer3')">RAX</button>
+        <button class="button" onclick="checkAnswer(7, 'answer3')">RDI</button>
+        <p id="answer3" class="answer"></p>
+
         <p>What is the primary purpose of the stack frame?</p>
-        <button class="button" onclick="checkAnswer(8)">Store function parameters and local variables</button>
-        <button class="button" onclick="checkAnswer(9)">Execute system calls</button>
-        
+        <button class="button" onclick="checkAnswer(8, 'answer4')">Store function parameters and local variables</button>
+        <button class="button" onclick="checkAnswer(9, 'answer4')">Execute system calls</button>
+        <p id="answer4" class="answer"></p>
+
         <p>Which calling convention is used in Linux 64-bit systems?</p>
-        <button class="button" onclick="checkAnswer(10)">cdecl</button>
-        <button class="button" onclick="checkAnswer(11)">System V ABI</button>
-        
+        <button class="button" onclick="checkAnswer(10, 'answer5')">cdecl</button>
+        <button class="button" onclick="checkAnswer(11, 'answer5')">System V ABI</button>
+        <p id="answer5" class="answer"></p>
+
         <p>What does the <code>mov rbp, rsp</code> instruction do?</p>
-        <button class="button" onclick="checkAnswer(12)">Sets up a new stack frame</button>
-        <button class="button" onclick="checkAnswer(13)">Moves data from RSP to RBP</button>
-        
+        <button class="button" onclick="checkAnswer(12, 'answer6')">Sets up a new stack frame</button>
+        <button class="button" onclick="checkAnswer(13, 'answer6')">Moves data from RSP to RBP</button>
+        <p id="answer6" class="answer"></p>
+
         <p>Which instruction is responsible for calling a function in assembly?</p>
-        <button class="button" onclick="checkAnswer(14)">jmp</button>
-        <button class="button" onclick="checkAnswer(15)">call</button>
+        <button class="button" onclick="checkAnswer(14, 'answer7')">jmp</button>
+        <button class="button" onclick="checkAnswer(15, 'answer7')">call</button>
+        <p id="answer7" class="answer"></p>
+    </div>
     </div>
     
     <script>
@@ -175,7 +191,7 @@ function animateCode() {
             showLine();
         }
 
-        function checkAnswer(question) {
+        function checkAnswer(question, answerId) {
             let responses = [
                 "✅ Correct! The <code>ret</code> instruction returns to the caller.",
                 "❌ Incorrect. The <code>ret</code> instruction does not allocate memory.",
@@ -194,8 +210,9 @@ function animateCode() {
                 "❌ Incorrect. <code>jmp</code> is used for jumping, not function calls.",
                 "✅ Correct! <code>call</code> is used to invoke a function."
             ];
-            alert(responses[question]);
+            document.getElementById(answerId).innerHTML = responses[question];
         }
+
     </script>
 </body>
 </html>
