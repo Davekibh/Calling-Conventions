@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calling Conventions Explained</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        header {
+            background: #007bff;
+            color: white;
+            padding: 15px;
+            font-size: 24px;
+            animation: fadeIn 2s;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: left;
+            animation: slideIn 1s ease-in-out;
+        }
+        h2 {
+            color: #007bff;
+        }
+        .code {
+            background: #222;
+            color: #0f0;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: left;
+            font-family: monospace;
+            overflow-x: auto;
+            animation: highlight 2s infinite alternate;
+        }
+        .quiz, .qa-section {
+            margin-top: 20px;
+            padding: 10px;
+            background: #e0e0e0;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .qa-item {
+            background: white;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+        .button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.3s, transform 0.2s;
+        }
+        .button:hover {
+            background: #0056b3;
+            transform: scale(1.1);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes highlight {
+            from { background-color: #222; }
+            to { background-color: #444; }
+        }
+    </style>
+</head>
+<body>
+    <header>Calling Conventions Explained</header>
+    <div class="container">
+        <h2>What Are Calling Conventions?</h2>
+        <p>Calling conventions define how functions receive parameters and return values. They are essential to ensure correct execution when calling functions in assembly, C, or any other language.</p>
+        
+        <h2>Key Questions and Answers</h2>
+        <div class="qa-section">
+            <div class="qa-item"><b>How do we get the CPU back to the correct state?</b><br> The return address is stored on the stack, and the <code>ret</code> instruction ensures execution resumes at the caller.</div>
+            <div class="qa-item"><b>How are local variables restored?</b><br> Local variables are stored on the stack and accessed relative to the base pointer. The function restores them before returning.</div>
+            <div class="qa-item"><b>How do we pass parameters?</b><br> In x86-64, the first six integer arguments are passed in registers (RDI, RSI, RDX, RCX, R8, R9), while additional ones are passed on the stack.</div>
+            <div class="qa-item"><b>How is the stack frame cleaned up?</b><br> The stack frame is cleaned by restoring <code>rbp</code> and adjusting <code>rsp</code>. Some conventions require the caller to clean up the stack.</div>
+            <div class="qa-item"><b>What changes between 32-bit and 64-bit programs?</b><br> In 32-bit, arguments are passed on the stack, while in 64-bit, registers are used more frequently for arguments, improving efficiency.</div>
+            <div class="qa-item"><b>Why do we need different calling conventions?</b><br> Different architectures and programming languages have different ways of handling function calls, requiring different conventions.</div>
+            <div class="qa-item"><b>What happens if calling conventions are not followed?</b><br> The function may not receive the correct parameters, leading to crashes or incorrect behavior.</div>
+        </div>
+        
+        <h2>Example: X86 Function Call</h2>
+        <pre class="code" id="code-block">section .text  ; Code section starts
+            global _start  ; Entry point for the program
+        
+        _start:
+            call my_function  ; Call the function my_function
+            mov eax, 60  ; Load exit system call number (60) into eax
+            xor edi, edi  ; Set exit status to 0 (edi = 0)
+            syscall  ; Invoke system call to exit the program
+        
+        my_function:
+            push rbp  ; Save the old base pointer
+            mov rbp, rsp  ; Set new base pointer to the current stack pointer
+            ; Function body here (can include logic)
+            pop rbp  ; Restore the old base pointer
+            ret  ; Return to the caller</pre>
+        <button class="button" onclick="animateCode()">Run Animation</button>
+        
+        <div class="quiz">
+            <h2>Quick Quiz</h2>
+        <p>What is the purpose of the <code>ret</code> instruction in assembly?</p>
+        <button class="button" onclick="checkAnswer(0)">Return to caller</button>
+        <button class="button" onclick="checkAnswer(1)">Allocate memory</button>
+        
+        <p>Which register is used to store the return address?</p>
+        <button class="button" onclick="checkAnswer(2)">rsp</button>
+        <button class="button" onclick="checkAnswer(3)">rip</button>
+        
+        <p>Where are function parameters stored in x86-64?</p>
+        <button class="button" onclick="checkAnswer(4)">Registers</button>
+        <button class="button" onclick="checkAnswer(5)">Heap</button>
+        
+        <p>Which register is used to pass the first integer argument in x86-64?</p>
+        <button class="button" onclick="checkAnswer(6)">RAX</button>
+        <button class="button" onclick="checkAnswer(7)">RDI</button>
+        
+        <p>What is the primary purpose of the stack frame?</p>
+        <button class="button" onclick="checkAnswer(8)">Store function parameters and local variables</button>
+        <button class="button" onclick="checkAnswer(9)">Execute system calls</button>
+        
+        <p>Which calling convention is used in Linux 64-bit systems?</p>
+        <button class="button" onclick="checkAnswer(10)">cdecl</button>
+        <button class="button" onclick="checkAnswer(11)">System V ABI</button>
+        
+        <p>What does the <code>mov rbp, rsp</code> instruction do?</p>
+        <button class="button" onclick="checkAnswer(12)">Sets up a new stack frame</button>
+        <button class="button" onclick="checkAnswer(13)">Moves data from RSP to RBP</button>
+        
+        <p>Which instruction is responsible for calling a function in assembly?</p>
+        <button class="button" onclick="checkAnswer(14)">jmp</button>
+        <button class="button" onclick="checkAnswer(15)">call</button>
+    </div>
+    
+    <script>
+
+function animateCode() {
+            let codeBlock = document.getElementById("code-block");
+            let lines = codeBlock.innerHTML.split('\n');
+            codeBlock.innerHTML = "";
+            let index = 0;
+            function showLine() {
+                if (index < lines.length) {
+                    let line = document.createElement("div");
+                    line.textContent = lines[index];
+                    line.style.opacity = 0;
+                    line.style.transition = "opacity 0.5s";
+                    codeBlock.appendChild(line);
+                    setTimeout(() => line.style.opacity = 1, 100);
+                    index++;
+                    setTimeout(showLine, 500);
+                }
+            }
+            showLine();
+        }
+
+        function checkAnswer(question) {
+            let responses = [
+                "✅ Correct! The <code>ret</code> instruction returns to the caller.",
+                "❌ Incorrect. The <code>ret</code> instruction does not allocate memory.",
+                "❌ Incorrect. The return address is not stored in <code>rsp</code>.",
+                "✅ Correct! The return address is stored in <code>rip</code>.",
+                "✅ Correct! Function parameters are stored in registers in x86-64.",
+                "❌ Incorrect. Function parameters are not stored in the heap.",
+                "❌ Incorrect. The first integer argument is not in <code>RAX</code>.",
+                "✅ Correct! The first integer argument is stored in <code>RDI</code>.",
+                "✅ Correct! The stack frame stores function parameters and local variables.",
+                "❌ Incorrect. The stack frame does not execute system calls.",
+                "❌ Incorrect. <code>cdecl</code> is not the standard Linux 64-bit calling convention.",
+                "✅ Correct! Linux 64-bit systems use <code>System V ABI</code>.",
+                "✅ Correct! <code>mov rbp, rsp</code> sets up a new stack frame.",
+                "❌ Incorrect. It does not just move data; it establishes a stack frame.",
+                "❌ Incorrect. <code>jmp</code> is used for jumping, not function calls.",
+                "✅ Correct! <code>call</code> is used to invoke a function."
+            ];
+            alert(responses[question]);
+        }
+    </script>
+</body>
+</html>
